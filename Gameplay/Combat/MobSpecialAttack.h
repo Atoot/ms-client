@@ -15,35 +15,34 @@
 //	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #pragma once
 
-#include "Animation.h"
+#include <memory>
+
+#include "../../Graphics/Animation.h"
+#include "MobSkillHitEffect.h"
+#include "MobSkillUseEffect.h"
 
 namespace ms {
-// Combines an Animation with additional state
-class Sprite {
+class Mob;
+
+// The attack implementation of special move
+class MobSpecialAttack {
 public:
-    Sprite(const Animation &animation, const DrawArgument &stateargs);
+    MobSpecialAttack(int32_t mob_id, int32_t move_id);
 
-    Sprite(nl::node src, const DrawArgument &stateargs);
+    void apply_useeffects(Mob &mob) const;
 
-    Sprite(nl::node src);
+    void apply_hiteffects(Mob &mob) const;
 
-    Sprite();
+    bool is_attack() const;
 
-    void draw(Point<int16_t> parentpos, float alpha) const;
+    bool is_skill() const;
 
-    bool update(uint16_t timestep);
-
-    bool update();
-
-    void reset() { animation_.reset(); }
-
-    int16_t width() const;
-    int16_t height() const;
-    Point<int16_t> get_origin() const;
-    Point<int16_t> get_dimensions() const;
+    int32_t get_id() const;
 
 private:
-    Animation animation_;
-    DrawArgument state_args_;
+    std::unique_ptr<MobSkillUseEffect> use_effect_;
+    std::unique_ptr<MobSkillHitEffect> hit_effect_;
+
+    int32_t move_id_;
 };
 }  // namespace ms

@@ -405,6 +405,8 @@ enum Opcode : uint16_t {
 
     UPDATE_CHARLOOK = 197,
     SHOW_FOREIGN_EFFECT = 198,
+    GIVE_FOREIGN_BUFF = 199,
+    CANCEL_FOREIGN_BUFF = 200,
     SHOW_ITEM_GAIN_INCHAT = 206,  // TODO: Rename this (Terribly named)
 
     /// Player
@@ -416,6 +418,8 @@ enum Opcode : uint16_t {
     SPAWN_MOB_C = 238,
     MOB_MOVED = 239,
     MOB_MOVE_RESPONSE = 240,
+    APPLY_MONSTER_STATUS = 242,
+    CANCEL_MONSTER_STATUS = 243,
     SHOW_MOB_HP = 250,
     SPAWN_NPC = 257,
     SPAWN_NPC_C = 259,
@@ -461,6 +465,8 @@ PacketSwitch::PacketSwitch() {
     emplace<CHAR_MOVED, CharMovedHandler>();
     emplace<UPDATE_CHARLOOK, UpdateCharLookHandler>();
     emplace<SHOW_FOREIGN_EFFECT, ShowForeignEffectHandler>();
+    emplace<GIVE_FOREIGN_BUFF, GiveForeignBuffHandler>();
+    emplace<CANCEL_FOREIGN_BUFF, CancelForeignBuffHandler>();
     emplace<REMOVE_CHAR, RemoveCharHandler>();
     emplace<SPAWN_PET, SpawnPetHandler>();
     emplace<SPAWN_NPC, SpawnNpcHandler>();
@@ -469,6 +475,8 @@ PacketSwitch::PacketSwitch() {
     emplace<SPAWN_MOB_C, SpawnMobControllerHandler>();
     emplace<MOB_MOVED, MobMovedHandler>();
     emplace<MOB_MOVE_RESPONSE, MobMoveResponseHandler>();
+    emplace<APPLY_MONSTER_STATUS, ApplyMobStatusHandler>();
+    emplace<CANCEL_MONSTER_STATUS, CancelMobStatusHandler>();
     emplace<SHOW_MOB_HP, ShowMobHpHandler>();
     emplace<KILL_MOB, KillMobHandler>();
     emplace<DROP_LOOT, DropLootHandler>();

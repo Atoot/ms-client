@@ -15,60 +15,52 @@
 //	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #pragma once
 
-#include <cstdint>
-#include <functional>
-#include <vector>
-#include <nlnx/nx.hpp>
-
-#include "../../Graphics/Animation.h"
+#include "../../Template/BoolPair.h"
+#include "Character/Char.h"
+#include "nlnx/nx.hpp"
 
 namespace ms {
-class Mob;
-class MobSkillUseEffect {
+// Interface for affected effects
+class SkillAffectedEffect {
 public:
-    virtual ~MobSkillUseEffect() = default;
+    virtual ~SkillAffectedEffect() {}
 
-    virtual void apply(Mob &mob) const = 0;
+    virtual void apply(Char &target) const = 0;
 
 protected:
     class Effect {
     public:
         Effect(nl::node src) {
             animation_ = src;
+            pos_ = src["pos"];
             z_ = src["z"];
         }
 
-        void apply(const std::function<void(Animation, int8_t, int8_t, bool)>
-                       &func_show_effect) const {
-            func_show_effect(animation_, 1, z_, false);
-            // mob.show_effect(animation_, 0, z_, true);
+        void apply(Char &target) const {
+            target.show_attack_effect(animation_, z_);
         }
 
     private:
         Animation animation_;
+        int8_t pos_;
         int8_t z_;
     };
 };
 
-// An effect which displays an animation over the mob's position
-class MobSingleUseEffect : public MobSkillUseEffect {
+// No animation
+class NoAffectedEffect : public SkillAffectedEffect {
 public:
-    MobSingleUseEffect(nl::node src);
+    void apply(Char &) const override {}
+};
 
-    void apply(Mob &mob) const override;
+// An effect which displays an animation over the character's position
+class SingleAffectedEffect : public SkillAffectedEffect {
+public:
+    SingleAffectedEffect(nl::node src);
+
+    void apply(Char &target) const override;
 
 private:
     Effect effect_;
-};
-
-// An effect which displays multiple animations over the mob's position
-class MobMultiUseEffect : public MobSkillUseEffect {
-public:
-    MobMultiUseEffect(nl::node src, bool area_warning = false);
-
-    void apply(Mob &mob) const override;
-
-private:
-    std::vector<Effect> effects_;
 };
 }  // namespace ms

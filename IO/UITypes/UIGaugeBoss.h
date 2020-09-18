@@ -15,35 +15,34 @@
 //	along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #pragma once
 
-#include "Animation.h"
+#include "../Graphics/Texture.h"
+#include "../UIElement.h"
 
 namespace ms {
-// Combines an Animation with additional state
-class Sprite {
+class UIGaugeBoss : public UIElement {
 public:
-    Sprite(const Animation &animation, const DrawArgument &stateargs);
+    static constexpr Type TYPE = UIElement::Type::GAUGE_BOSS;
+    static constexpr bool FOCUSED = false;
+    static constexpr bool TOGGLED = false;
 
-    Sprite(nl::node src, const DrawArgument &stateargs);
+    UIGaugeBoss(int16_t screen_width,
+                int8_t tag_color,
+                int8_t tag_bg_color,
+                int32_t mob_id,
+                float percent);
 
-    Sprite(nl::node src);
-
-    Sprite();
-
-    void draw(Point<int16_t> parentpos, float alpha) const;
-
-    bool update(uint16_t timestep);
-
-    bool update();
-
-    void reset() { animation_.reset(); }
-
-    int16_t width() const;
-    int16_t height() const;
-    Point<int16_t> get_origin() const;
-    Point<int16_t> get_dimensions() const;
+    void draw(float alpha) const override;
+    void update(float p);
+    Type get_type() const override { return TYPE; };
 
 private:
-    Animation animation_;
-    DrawArgument state_args_;
+    Texture tag_front_;
+    Texture tag_bg_;
+
+    bool should_use_tag_bg_;
+
+    int16_t screen_width_;
+
+    float percentage_;
 };
 }  // namespace ms

@@ -13,37 +13,15 @@
 //
 //	You should have received a copy of the GNU Affero General Public License
 //	along with this program.  If not, see <https://www.gnu.org/licenses/>.
-#pragma once
+#include "SkillAffectedEffect.h"
 
-#include "Animation.h"
+#include "../../Util/Misc.h"
 
 namespace ms {
-// Combines an Animation with additional state
-class Sprite {
-public:
-    Sprite(const Animation &animation, const DrawArgument &stateargs);
+SingleAffectedEffect::SingleAffectedEffect(nl::node src) :
+    effect_(src["affected"]) {}
 
-    Sprite(nl::node src, const DrawArgument &stateargs);
-
-    Sprite(nl::node src);
-
-    Sprite();
-
-    void draw(Point<int16_t> parentpos, float alpha) const;
-
-    bool update(uint16_t timestep);
-
-    bool update();
-
-    void reset() { animation_.reset(); }
-
-    int16_t width() const;
-    int16_t height() const;
-    Point<int16_t> get_origin() const;
-    Point<int16_t> get_dimensions() const;
-
-private:
-    Animation animation_;
-    DrawArgument state_args_;
-};
+void SingleAffectedEffect::apply(Char &target) const {
+    effect_.apply(target);
+}
 }  // namespace ms
